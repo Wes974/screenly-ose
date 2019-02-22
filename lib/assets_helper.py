@@ -2,11 +2,11 @@ import db
 import queries
 import datetime
 
-FIELDS = ["asset_id", "name", "uri", "start_date",
+FIELDS = ["asset_id", "name", "playlist", "uri", "start_date",
           "end_date", "duration", "mimetype", "is_enabled", "is_processing", "nocache", "play_order",
           "skip_asset_check"]
 
-create_assets_table = 'CREATE TABLE assets(asset_id text primary key, name text, uri text, md5 text, start_date timestamp, end_date timestamp, duration text, mimetype text, is_enabled integer default 0, is_processing integer default 0, nocache integer default 0, play_order integer default 0, skip_asset_check integer default 0)'
+create_assets_table = 'CREATE TABLE assets(asset_id text primary key, name text, playlist text, uri text, md5 text, start_date timestamp, end_date timestamp, duration text, mimetype text, is_enabled integer default 0, is_processing integer default 0, nocache integer default 0, play_order integer default 0, skip_asset_check integer default 0)'
 
 
 # Note all times are naive for legacy reasons but always UTC.
@@ -33,6 +33,10 @@ def is_active(asset, at_time=None):
         at = at_time or get_time()
         return 1 if asset['start_date'] < at < asset['end_date'] else 0
     return 0
+
+def is_in_playlist(asset, playlist):
+    """ Accept an asset if it is in the same playlist """
+    return asset['playlist'] == playlist
 
 
 def get_names_of_assets(conn):

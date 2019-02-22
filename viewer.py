@@ -237,7 +237,10 @@ def generate_asset_list():
     assets = assets_helper.read(db_conn)
     deadlines = [asset['end_date'] if assets_helper.is_active(asset) else asset['start_date'] for asset in assets]
 
+    current_playlist = settings['playlist']
+
     playlist = filter(assets_helper.is_active, assets)
+    playlist = filter(lambda x : x['playlist'] == current_playlist, playlist)
     deadline = sorted(deadlines)[0] if len(deadlines) > 0 else None
     logging.debug('generate_asset_list deadline: %s', deadline)
 
@@ -437,6 +440,7 @@ def asset_loop(scheduler):
         check_update()
     asset = scheduler.get_next_asset()
 
+    view_image(HOME + LOAD_SCREEN)
     if asset is None:
         logging.info('Playlist is empty. Sleeping for %s seconds', EMPTY_PL_DELAY)
         view_image(HOME + LOAD_SCREEN)

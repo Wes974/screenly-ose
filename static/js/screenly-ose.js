@@ -140,11 +140,12 @@
 
     Asset.prototype.idAttribute = "asset_id";
 
-    Asset.prototype.fields = 'name mimetype uri start_date end_date duration skip_asset_check'.split(' ');
+    Asset.prototype.fields = 'name playlist mimetype uri start_date end_date duration skip_asset_check'.split(' ');
 
     Asset.prototype.defaults = function() {
       return {
         name: '',
+	playlist: "default",
         mimetype: 'webpage',
         uri: '',
         is_active: 1,
@@ -376,6 +377,7 @@
             });
             filename = data['files'][0]['name'];
             that.$fv('name', filename);
+            that.$fv('playlist', 'default');
             that.updateFileUploadMimetype(filename);
             that.viewmodel(model);
             return data.submit().success(function(uri) {

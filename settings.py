@@ -27,6 +27,7 @@ DEFAULTS = {
         'websocket_port': '9999'
     },
     'viewer': {
+        'playlist': 'default',
         'audio_output': 'hdmi',
         'debug_logging': False,
         'default_duration': '10',

@@ -81,9 +81,10 @@ Backbone.emulateJSON = off
 # Models
 API.Asset = class Asset extends Backbone.Model
   idAttribute: "asset_id"
-  fields: 'name mimetype uri start_date end_date duration skip_asset_check'.split ' '
+  fields: 'name playlist mimetype uri start_date end_date duration skip_asset_check'.split ' '
   defaults: ->
     name: ''
+    playlist: 'default'
     mimetype: 'webpage'
     uri: ''
     is_active: 1

@@ -262,6 +262,7 @@ class AssetModel(Schema):
     type = 'object'
     properties = {
         'asset_id': {'type': 'string'},
+        'playlist': {'type': 'string'},
         'name': {'type': 'string'},
         'uri': {'type': 'string'},
         'start_date': {
@@ -305,6 +306,7 @@ class AssetRequestModel(Schema):
     type = 'object'
     properties = {
         'name': {'type': 'string'},
+        'playlist': {'type': 'string'},
         'uri': {'type': 'string'},
         'start_date': {
             'type': 'string',
@@ -340,6 +342,7 @@ class AssetContentModel(Schema):
     type = 'object'
     properties = {
         'type': {'type': 'string'},
+        'playlist': {'type': 'string'},
         'url': {'type': 'string'},
         'filename': {'type': 'string'},
         'mimetype': {'type': 'string'},
@@ -414,6 +417,9 @@ def prepare_asset(request, unique_name=False):
 
     if not all([get('name'), get('uri'), get('mimetype')]):
         raise Exception("Not enough information provided. Please specify 'name', 'uri', and 'mimetype'.")
+    playlist = get('playlist')
+    if not get('playlist'):
+        playlist = "default"
 
     name = get('name')
     if unique_name:
@@ -431,6 +437,7 @@ def prepare_asset(request, unique_name=False):
 
     asset = {
         'name': name,
+        'playlist': playlist,
         'mimetype': get('mimetype'),
         'asset_id': get('asset_id'),
         'is_enabled': get('is_enabled'),
@@ -496,6 +503,7 @@ def prepare_asset_v1_2(request_environ, asset_id=None, unique_name=False):
             return val
 
     if not all([get('name'),
+                get('playlist'),
                 get('uri'),
                 get('mimetype'),
                 str(get('is_enabled')),
@@ -520,6 +528,7 @@ def prepare_asset_v1_2(request_environ, asset_id=None, unique_name=False):
 
     asset = {
         'name': name,
+        'playlist': get('playlist'),
         'mimetype': get('mimetype'),
         'is_enabled': get('is_enabled'),
         'nocache': get('nocache')
@@ -727,6 +736,7 @@ class Assets(Resource):
                     Content-Type: application/x-www-form-urlencoded
                     model: "{
                         "name": "Website",
+                        "playlist": "default",
                         "mimetype": "webpage",
                         "uri": "http://example.com",
                         "is_active": 0,
@@ -797,6 +807,7 @@ class Asset(Resource):
                     Content-Type: application/x-www-form-urlencoded
                     model: "{
                         "asset_id": "793406aa1fd34b85aa82614004c0e63a",
+                        "playlist": "default",
                         "name": "Website",
                         "mimetype": "webpage",
                         "uri": "http://example.com",
@@ -1656,6 +1667,27 @@ def viewIndex():
         ws_addresses.append('wss://{}.resindevice.io/ws/'.format(resin_uuid))
 
     return template('index.html', ws_addresses=ws_addresses, player_name=player_name, is_demo=is_demo)
+
+
+@app.route('/control')
+@auth_basic
+def control_page():
+    player_name = settings['player_name']
+    my_ip = get_node_ip()
+    is_demo = is_demo_node()
+    resin_uuid = getenv("RESIN_UUID", None)
+
+    ws_addresses = []
+
+    if settings['use_ssl']:
+        ws_addresses.append('wss://' + my_ip + '/ws/')
+    else:
+        ws_addresses.append('ws://' + my_ip + ':' + settings['websocket_port'])
+
+    if resin_uuid:
+        ws_addresses.append('wss://{}.resindevice.io/ws/'.format(resin_uuid))
+
+    return template('control.html', ws_addresses=ws_addresses, player_name=player_name, is_demo=is_demo)
 
 
 @app.route('/settings', methods=["GET", "POST"])
