@@ -55,4 +55,12 @@ services:
 
 volumes:
   screenly-assets-volume:
+    driver: local
+    driver_opts:
+      type: bind
+      device: /home/pi/screenly_assets
   screenly-volume:
+    driver: local
+    driver_opts:
+      type: bind
+      device: /home/pi/screenly

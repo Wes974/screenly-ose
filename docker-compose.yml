@@ -78,4 +78,8 @@ services:
     restart: always
 
 volumes:
-    resin-data:/home/pi/data
+    resin-data:
+      driver: local
+      driver_opts:
+        type: bind
+        device: /home/pi/data
