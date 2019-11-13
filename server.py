@@ -124,6 +124,7 @@ def append_usb_assets(mountpoint):
     datetime_now = datetime.now()
     usb_assets_settings = {
         'activate': False,
+        'playlist': 'default',
         'copy': False,
         'start_date': datetime_now,
         'end_date': datetime_now + timedelta(days=7),
@@ -139,6 +140,11 @@ def append_usb_assets(mountpoint):
                         usb_assets_settings.update({
                             'activate': usb_file_settings.get('activate')
                         })
+                    if usb_file_settings.get('playlist'):
+                        usb_assets_settings.update({
+                            'playlist': usb_file_settings.get('playlist')
+                        })
+
                     if usb_file_settings.get('copy'):
                         usb_assets_settings.update({
                             'copy': usb_file_settings.get('copy')
@@ -358,6 +364,7 @@ class AssetPropertiesModel(Schema):
     type = 'object'
     properties = {
         'name': {'type': 'string'},
+        'playlist': {'type': 'string'},
         'start_date': {
             'type': 'string',
             'format': 'date-time'
@@ -597,6 +604,7 @@ def prepare_usb_asset(filepath, **kwargs):
 
     return {
         'asset_id': asset_id,
+        'playlist':  kwargs['playlist'],
         'duration': duration,
         'end_date': kwargs['end_date'],
         'is_active': 1,
@@ -621,6 +629,7 @@ def prepare_default_asset(**kwargs):
 
     return {
         'asset_id': asset_id,
+        'playlist':  kwargs['playlist'],
         'duration': duration,
         'end_date': kwargs['end_date'],
         'is_active': 1,
