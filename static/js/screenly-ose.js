@@ -847,6 +847,7 @@
       var json;
       this.$el.html(this.template(_.extend(json = this.model.toJSON(), {
         name: insertWbr(truncate_str(json.name)),
+        playlist: insertWbr(truncate_str(json.playlist)),
         duration: durationSecondsToHumanReadable(json.duration),
         start_date: (date_to(json.start_date)).string(),
         end_date: (date_to(json.end_date)).string()
