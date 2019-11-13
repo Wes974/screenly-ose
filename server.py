@@ -1679,7 +1679,7 @@ def viewIndex():
 
 
 @app.route('/control')
-@auth_basic
+@authorized
 def control_page():
     player_name = settings['player_name']
     my_ip = get_node_ip()
