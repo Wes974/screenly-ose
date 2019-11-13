@@ -78,4 +78,4 @@ services:
     restart: always
 
 volumes:
-    resin-data:
+    resin-data:/home/pi/data
