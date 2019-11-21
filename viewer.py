@@ -506,6 +506,8 @@ def setup_hotspot():
             wireless_connections
         )
     )
+    wait_for_node_ip(5)
+    return
 
     # Displays the hotspot page
 
