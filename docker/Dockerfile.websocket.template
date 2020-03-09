@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_MACHINE_NAME%%-debian:jessie
+FROM resin/rpi-raspbian
 
 RUN apt-get update && \
     apt-get -y install \
